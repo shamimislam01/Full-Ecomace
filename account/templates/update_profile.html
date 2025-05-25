@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+      {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Sidebar -->
+     <div class="col-md-3">
+      <div class="list-group">
+        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+  <i class="fas fa-user-circle me-2"></i> Dashboard
+</a>
+<a href="{% url 'my_orders' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'my_orders' %}active{% endif %}">
+  <i class="fas fa-box me-2"></i> My Orders
+</a>
+        <a href="{% url 'track_order' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'track_order' %}active{% endif %}">
+          <i class="fas fa-truck me-2"></i> Track Order
+        </a>
+        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action">
+          <i class="fas fa-heart me-2"></i> Wishlist
+        </a>
+        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action">
+          <i class="fas fa-file-invoice me-2"></i> Invoices
+        </a>
+        
+        <a href="{% url 'update_profile' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'update_profile' %}active{% endif %}">
+          <i class="fas fa-user-edit me-2"></i> Update Profile
+        </a>
+        <a href="{% url 'update_password' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'update_password' %}active{% endif %}">
+          <i class="fas fa-key me-2"></i> Change Password
+        </a>
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action text-danger">
+          <i class="fas fa-sign-out-alt me-2"></i> Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Content -->
+      <!-- Main Content -->
+    <div class="col-md-9">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Update Profile</h5>
+        </div>
+        <div class="card-body">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col">
+                <label class="form-label">First Name</label>
+                <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" required>
+              </div>
+              <div class="col">
+                <label class="form-label">Last Name</label>
+                <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" name="username" class="form-control" value="{{ user.username }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Mobile Number</label>
+              <input type="text" name="mobile" class="form-control" value="{{ user.mobile }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Address Line 1</label>
+              <input type="text" name="address1" class="form-control" value="{{ user.address_line_1 }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Address Line 2 (optional)</label>
+              <input type="text" name="address2" class="form-control" value="{{ user.address_line_2 }}">
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label">City</label>
+                <input type="text" name="city" class="form-control" value="{{ user.city }}" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Postcode</label>
+                <input type="text" name="postcode" class="form-control" value="{{ user.postcode }}" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Country</label>
+                <input type="text" name="country" class="form-control" value="{{ user.country }}" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Update Profile</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

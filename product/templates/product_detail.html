@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}All Products{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+      {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Product Images -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% comment %} <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwyfHx3YXRjaHxlbnwwfDB8fHwxNzM0OTY1MTc4fDA&ixlib=rb-4.0.3&q=80&w=1080" class="img-thumbnail" alt="Thumbnail 1">
+                        </div>
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1495857000853-fe46c8aefc30?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw2fHx3YXRjaHxlbnwwfDB8fHwxNzM0OTY1MTc4fDA&ixlib=rb-4.0.3&q=80&w=1080" class="img-thumbnail" alt="Thumbnail 2">
+                        </div>
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1451859757691-f318d641ab4d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHw3fHx3YXRjaHxlbnwwfDB8fHwxNzM0OTY1MTc4fDA&ixlib=rb-4.0.3&q=80&w=1080" class="img-thumbnail" alt="Thumbnail 3">
+                        </div>
+                        <div class="col-3">
+                            <img src="https://images.unsplash.com/photo-1490915785914-0af2806c22b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzEyNjZ8MHwxfHNlYXJjaHwzfHx3YXRjaHxlbnwwfDB8fHwxNzM0OTY1MTc4fDA&ixlib=rb-4.0.3&q=80&w=1080" class="img-thumbnail" alt="Thumbnail 4">
+                        </div>
+                    </div>
+                </div> {% endcomment %}
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h1 class="h2 mb-3">{{ product.name }}</h1>
+            <div class="mb-3">
+                <span class="h4 me-2">৳{{ product.new_price }}</span>
+                <span class="text-muted text-decoration-line-through">৳{{ product.old_price }}</span>
+                <span class="badge bg-danger ms-2">25% OFF</span>
+            </div>
+
+            <div class="mb-3">
+                <div class="d-flex align-items-center">
+                     <div class="text-warning">
+                                {% for i in "12345"|slice:":product.average_rating"|make_list %}
+                                    <i class="fas fa-star"></i>
+                                {% endfor %}
+                                {% if product.average_rating|floatformat:1 != product.average_rating|floatformat:0 %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                {% endif %}
+                            </div>
+                    <span class="text-muted">{{ review_count }}</span>
+                </div>
+            </div>
+
+            <p class="mb-4">{{ product.description|truncatewords:20 }}.</p>
+
+
+
+            <form method="post" action="{% url 'add_to_cart' product.id %}">
+    {% csrf_token %}
+
+    <!-- Quantity -->
+    <div class="mb-4">
+        <label class="form-label me-2">Quantity:</label>
+        <div class="input-group quantity-selector w-auto">
+            <button class="btn btn-outline-secondary btn-minus" type="button">−</button>
+            <input type="text" name="quantity" class="form-control text-center qty-input" value="1" min="1" max="10" readonly>
+            <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+        </button>
+    </div>
+</form>
+
+            <!-- Additional Info -->
+            <div class="mt-4">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-truck text-primary me-2"></i>
+                    <span>Free shipping on orders over $50</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <i class="fas fa-undo text-primary me-2"></i>
+                    <span>30-day return policy</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-shield-alt text-primary me-2"></i>
+                    <span>2-year warranty</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<hr class="my-5">
+
+<!-- Customer Reviews -->
+<div class="container mt-4">
+    <h4 class="mb-3">Customer Reviews ({{ review_count }})</h4>
+
+    <!-- Show all reviews -->
+    {% for review in reviews %}
+        <div class="border-bottom pb-3 mb-3">
+            <strong>{{ review.user }}</strong> 
+            <small class="text-muted">{{ review.created_at|date:"F j, Y" }}</small>
+            <div class="text-warning mb-1">
+                {% for i in "12345"|slice:":review.rating"|make_list %}
+                    <i class="fas fa-star"></i>
+                {% endfor %}
+            </div>
+            <p class="mb-0">{{ review.comment  }}</p>
+        </div>
+    {% empty %}
+        <p>No reviews yet.</p>
+    {% endfor %}
+
+    <hr>
+
+    <!-- Review Form -->
+    {% if has_purchased %}
+        <div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title">Write a Review</h5>
+    <form method="post" action="{% url 'submit_review' product.id %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Rating</label>
+        <select name="rating" class="form-select" required>
+          <option value="">Choose...</option>
+          <option value="5">★★★★★ (Excellent)</option>
+          <option value="4">★★★★☆ (Good)</option>
+          <option value="3">★★★☆☆ (Average)</option>
+          <option value="2">★★☆☆☆ (Poor)</option>
+          <option value="1">★☆☆☆☆ (Terrible)</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Comment</label>
+        <textarea name="comment" class="form-control" rows="4" placeholder="Write your honest opinion..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+  </div>
+</div>
+
+    {% else %}
+        <div class="alert alert-warning mt-4">
+            আপনি এখনো এই প্রোডাক্ট অর্ডার করেননি। রিভিউ দিতে হলে আপনাকে আগে অর্ডার করতে হবে।
+        </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}

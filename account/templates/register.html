@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h3 class="text-center mb-4">Create Your Account</h3>
+
+                    <div class="container mt-3">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+      {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+                    <form action="{% url 'register' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" name="first_name" class="form-control" id="first_name" placeholder="John">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" name="last_name" class="form-control" id="last_name" placeholder="Doe">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" name="username" class="form-control" id="username" placeholder="johndoe123">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" placeholder="you@example.com">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="mobile" class="form-label">Mobile Number</label>
+                                <input type="text" name="mobile" class="form-control" id="mobile" placeholder="01XXXXXXXXX">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" name="city" class="form-control" id="city" placeholder="Dhaka">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="address1" class="form-label">Address Line 1</label>
+                                <input type="text" name="address1" class="form-control" id="address1">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="address2" class="form-label">Address Line 2</label>
+                                <input type="text" name="address2" class="form-control" id="address2">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="postcode" class="form-label">Postcode</label>
+                                <input type="text" name="postcode" class="form-control" id="postcode">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="country" class="form-label">Country</label>
+                                <select class="form-select" name="country" id="country">
+                                    <option value="" selected disabled>Select your country</option>
+            <option value="Afghanistan">Afghanistan</option>
+            <option value="Albania">Albania</option>
+            <option value="Algeria">Algeria</option>
+            <option value="Andorra">Andorra</option>
+            <option value="Angola">Angola</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Armenia">Armenia</option>
+            <option value="Australia">Australia</option>
+            <option value="Austria">Austria</option>
+            <option value="Azerbaijan">Azerbaijan</option>
+            <option value="Bahamas">Bahamas</option>
+            <option value="Bahrain">Bahrain</option>
+            <option value="Bangladesh">Bangladesh</option>
+            <option value="Barbados">Barbados</option>
+            <option value="Belarus">Belarus</option>
+            <option value="Belgium">Belgium</option>
+            <option value="Belize">Belize</option>
+            <option value="Benin">Benin</option>
+            <option value="Bhutan">Bhutan</option>
+            <option value="Bolivia">Bolivia</option>
+            <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+            <option value="Botswana">Botswana</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Brunei">Brunei</option>
+            <option value="Bulgaria">Bulgaria</option>
+            <option value="Burkina Faso">Burkina Faso</option>
+            <option value="Burundi">Burundi</option>
+            <!-- ... এবং অন্যান্য সব দেশ -->
+            <option value="United States">United States</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Vietnam">Vietnam</option>
+            <option value="Yemen">Yemen</option>
+            <option value="Zambia">Zambia</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+
+                                    <!-- বাকি দেশগুলোও রাখতে পারো যদি চাও -->
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password1" class="form-label">Password</label>
+                                <input type="password" name="password1" class="form-control" id="password1">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="password2" class="form-label">Confirm Password</label>
+                                <input type="password" name="password2" class="form-control" id="password2">
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Register Now</button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <p>Already have an account? <a href="{% url 'login' %} "  class="text-decoration-none">Login here</a></p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

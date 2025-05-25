@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Success{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+      {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<style>
+  .thank-you-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+  }
+  .thank-you-card {
+    max-width: 800px;
+    text-align: center;
+    padding: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+  .thank-you-card h1 {
+    font-size: 2.5rem;
+    color: #28a745;
+  }
+  .thank-you-card p {
+    font-size: 1.25rem;
+    color: #6c757d;
+  }
+  .order-details-table th, .order-details-table td {
+    text-align: left;
+  }
+  .thank-you-btn {
+    margin-top: 30px;
+    padding: 10px 30px;
+    font-size: 1.1rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  .thank-you-btn:hover {
+    background-color: #218838;
+  }
+</style>
+
+<div class="thank-you-container">
+  <div class="thank-you-card">
+    <h1>🎉 Thank You for Your Order!</h1>
+    <p>Your order has been successfully placed. Here are the details:</p>
+
+    <table class="table order-details-table mt-4">
+      <thead>
+        <tr>
+          <th>Order Number</th>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items.all %}
+<tr>
+  <td>{{ order.order_number }}</td>
+  <td>{{ item.product.name }}</td>
+  <td>{{ item.quantity }}</td>
+  <td>{{ item.total_price }}</td>
+</tr>
+{% endfor %}
+
+      </tbody>
+    </table>
+
+    <h4>Total Price: {{ order.total_price }}</h4>
+    <p>We will notify you once your order is ready for shipment.</p>
+    <a href="{% url 'index' %}" class="thank-you-btn">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

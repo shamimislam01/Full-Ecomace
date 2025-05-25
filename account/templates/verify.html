@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Registration{% endblock %}
+
+
+
+{% block content %}
+
+<div class="container mt-3">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+      {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card shadow p-4">
+                    <h3 class="mb-3 text-center">Enter Your OTP</h3>
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                    {% endif %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="otp" class="form-label">6-digit OTP</label>
+                            <input type="text" name="otp" class="form-control" maxlength="6" required>
+                        </div>
+                        <button class="btn btn-success w-100 mt-2">Verify</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+
+{% endblock %} 

@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Cart{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+      {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<style>
+  .summary-card {
+      background: white;
+      border-radius: 12px;
+      position: sticky;
+      top: 20px;
+  }
+  .checkout-btn {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border: none;
+      transition: transform 0.2s;
+  }
+  .checkout-btn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #4f46e5, #4338ca);
+  }
+  .remove-btn {
+      color: #dc2626;
+      cursor: pointer;
+      transition: all 0.2s;
+  }
+  .remove-btn:hover {
+      color: #991b1b;
+  }
+  .quantity-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #f3f4f6;
+      border: none;
+      transition: all 0.2s;
+  }
+  .quantity-btn:hover {
+      background: #e5e7eb;
+  }
+  .product-image {
+      max-width: 100%;
+      border-radius: 8px;
+  }
+</style>
+
+<div class="cart-wrapper">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Cart Items Section -->
+      <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="mb-0">Shopping Cart</h4>
+          <span class="text-muted">{{ cart_items.count }} items</span>
+        </div>
+
+        <div class="d-flex flex-column gap-3">
+          {% for item in cart_items %}
+            <div class="product-card p-3 shadow-sm">
+              <div class="row align-items-center">
+                <div class="col-md-2">
+                  <img src="{{ item.product.image.url }}" alt="Product" class="product-image">
+                </div>
+                <div class="col-md-4">
+                  <h6 class="mb-1">{{ item.product.name }}</h6>
+                  <p class="text-muted mb-0">{{ item.product.description|truncatewords:20 }}</p>
+                </div>
+                <div class="col-md-3">
+                  <div class="d-flex align-items-center gap-2">
+                      <!-- Minus Button -->
+    <a href="{% url 'update_quantity' item.id 'decrease' %}">
+        <button class="quantity-btn">-</button>
+    </a>
+
+    <!-- Quantity Input (Read-only) -->
+    <input type="number" class="quantity-input" value="{{ item.quantity }}" readonly>
+
+    <!-- Plus Button -->
+    <a href="{% url 'update_quantity' item.id 'increase' %}">
+        <button class="quantity-btn">+</button>
+    </a>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <span class="fw-bold item-total">
+                    ৳ {{ item.total_price|floatformat:2 }}
+                  </span>
+                </div>
+                <div class="col-md-1">
+                  <a href="{% url 'delete_cart_item' item.id %}" class="text-danger">
+                    <i class="bi bi-trash remove-btn"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% empty %}
+            <p class="text-muted">Your cart is empty.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Summary Section -->
+      <div class="col-lg-4">
+        <div class="summary-card p-4 shadow-sm">
+          <h5 class="mb-4">Order Summary</h5>
+
+          <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Subtotal</span>
+            <span>৳ {{ subtotal|floatformat:2 }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Discount</span>
+            <span class="text-success">৳ -{{ discount|floatformat:2 }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Shipping</span>
+            <span>৳ {{ shipping|floatformat:2 }}</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between mb-4">
+            <span class="fw-bold">Total</span>
+            <span class="fw-bold">৳ {{ final_total|floatformat:2 }}</span>
+          </div>
+
+          <!-- Promo Code -->
+          <div class="mb-4">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Promo code">
+              <button class="btn btn-outline-secondary" type="button">Apply</button>
+            </div>
+          </div>
+
+{% if cart_items %}
+          <a href="{% url 'checkout' %}" class="btn btn-primary checkout-btn w-100 mb-3">
+  Proceed to Checkout
+</a>
+{% else %}
+<button class="btn btn-primary checkout-btn w-100 mb-3" disabled>
+    Proceed to Checkout
+  </button>
+{% endif %}
+
+
+          <div class="d-flex justify-content-center gap-2">
+            <i class="bi bi-shield-check text-success"></i>
+            <small class="text-muted">Secure checkout</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

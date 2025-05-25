@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Track Your Order{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {% elif message.tags == 'warning' %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      {% else %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+      {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<div class="container-fluid mt-4">
+  <div class="row">
+    <!-- Sidebar (col-md-3) -->
+     <div class="col-md-3">
+      <div class="list-group">
+        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+  <i class="fas fa-user-circle me-2"></i> Dashboard
+</a>
+<a href="{% url 'my_orders' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'my_orders' %}active{% endif %}">
+  <i class="fas fa-box me-2"></i> My Orders
+</a>
+        <a href="{% url 'track_order' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'track_order' %}active{% endif %}">
+          <i class="fas fa-truck me-2"></i> Track Order
+        </a>
+        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action">
+          <i class="fas fa-heart me-2"></i> Wishlist
+        </a>
+        <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action">
+          <i class="fas fa-file-invoice me-2"></i> Invoices
+        </a>
+       
+        <a href="{% url 'update_profile' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'update_profile' %}active{% endif %}">
+          <i class="fas fa-user-edit me-2"></i> Update Profile
+        </a>
+        <a href="{% url 'update_password' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'update_password' %}active{% endif %}">
+          <i class="fas fa-key me-2"></i> Change Password
+        </a>
+        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action text-danger">
+          <i class="fas fa-sign-out-alt me-2"></i> Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Content (col-md-9) -->
+    <div class="col-md-9">
+      <h2>Track Your Order</h2>
+
+      {% if not order_number %}
+        <!-- Form to input order number -->
+        <form method="POST" action="{% url 'track_order' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="order_number" class="form-label">Enter Order Number:</label>
+                <input type="text" name="order_number" class="form-control" placeholder="Order Number" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Track Order</button>
+        </form>
+      {% else %}
+        <!-- Order details -->
+        <h3>Order Details for Order Number: {{ order_number }}</h3>
+
+        {% if products %}
+          <div class="table-responsive mt-4">
+              <table class="table table-bordered">
+                  <thead>
+                      <tr>
+                          <th>Product Name</th>
+                          <th>Price</th>
+                          <th>Status</th>
+                          <th>Order Date</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+    {% for item in products %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.order.get_order_status_display }}</td>
+            <td>{{ item.order.created_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+    {% endfor %}
+</tbody>
+
+              </table>
+          </div>
+        {% else %}
+          <p>No products found for this order.</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
